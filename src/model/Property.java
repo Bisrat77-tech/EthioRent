@@ -1,6 +1,6 @@
 package model;
 
-public class Property {
+public abstract class Property {
 
     protected String propertyId;
     protected String address;
@@ -8,7 +8,52 @@ public class Property {
     protected int bedrooms;
     protected int bathrooms;
     protected PropertyStatus status;
+// Constructor
+    public Property(String propertyId, String address, double rent, int bedrooms, int bathrooms){
+        this.propertyId = propertyId;
+        this.address = address;
+        this.rent = rent;
+        this.bedrooms = bedrooms;
+        this.bathrooms = bathrooms;
+        this.status = PropertyStatus.AVAILABLE;
+    }
+// Getters
+    public String getPropertyId(){
+        return propertyId;
+    }
 
-    // Constructor, getters
-    // methods
+    public String getAddress() {
+        return address;
+    }
+
+    public double getRent() {
+        return rent;
+    }
+
+    public int getBedrooms() {
+        return bedrooms;
+    }
+
+    public int getBathrooms() {
+        return bathrooms;
+    }
+
+    public PropertyStatus getStatus() {
+        return status;
+    }
+// Setter
+
+    public void setStatus(PropertyStatus status) {
+        this.status = status;
+    }
+
+    public abstract void displayInfo();
+
+    protected abstract String getType();
+
+    public String toFileString(){
+        return propertyId + "|" + address + "|" + rent + "|" +
+                bedrooms + "|" + bathrooms + "|" + status + "|" +
+                getType();
+    }
 }
