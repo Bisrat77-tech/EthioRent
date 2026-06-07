@@ -1,6 +1,6 @@
 package model;
 
-public class Property {
+public abstract class Property {
 
     protected String propertyId;
     protected String address;
@@ -10,13 +10,13 @@ public class Property {
     protected PropertyStatus status;
 
     // Constructor, getters
-    public Property (String propertyId, String address, double rent, int bedrooms, int bathrooms, PropertyStatus status) {
+    public Property (String propertyId, String address, double rent, int bedrooms, int bathrooms) {
         this.propertyId = propertyId;
         this.address = address;
         this.rent = rent;
         this.bedrooms = bedrooms;
         this.bathrooms = bathrooms;
-        this.status = status;
+        this.status = PropertyStatus.AVAILABLE;
     }
 
     public String getPropertyId() {
@@ -47,9 +47,15 @@ public class Property {
         this.status = status;
     }
 
-    // methods
+    public abstract void displayInfo();
+    protected abstract String getType();
+
+    public String toFileString() {
+        return propertyId + "|" + address + "|" + rent + "|" + bedrooms + "|" + bathrooms + "|" + status + "|" + getType();
+    }
+
     @Override
     public String toString() {
-        return "Property ID: " + propertyId + ", Address: " + address + ", Rent: " + rent + ", Bedrooms: " + bedrooms + ", Bathrooms: " + bathrooms + ", Status: " + status;
+        return toFileString();
     }
 }
