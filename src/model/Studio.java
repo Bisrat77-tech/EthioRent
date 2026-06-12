@@ -10,7 +10,7 @@ public class Studio extends Property{
     }
     @Override
     public void displayInfo() {
-        System.out.println("\n🎨 STUDIO APARTMENT");
+        System.out.println("\n STUDIO APARTMENT");
         System.out.println("ID: " + propertyId);
         System.out.println("Address: " + address);
         System.out.println("Monthly Rent: " + rent + " ETB");

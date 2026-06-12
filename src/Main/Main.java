@@ -319,7 +319,7 @@ public class Main {
             }
         }
         System.out.println("=".repeat(40));
-        System.out.printf("💰 TOTAL MONTHLY REVENUE: %.2f ETB%n", total);
+        System.out.printf(" TOTAL MONTHLY REVENUE: %.2f ETB%n", total);
         System.out.println("=".repeat(40));
     }
     }
