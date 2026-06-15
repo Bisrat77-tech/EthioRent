@@ -1,24 +1,49 @@
 package service;
 
 import model.*;
+import utils.DatabaseConnection;
+import utils.InputHelper;
 import java.io.*;
 import java.util.*;
 
 public class RentalSystem {
+    // file storage maps
     private Map<String, Property> properties;
     private Map<String, Tenant> tenants;
     private Map<String, RentalAgreement> rentals;
 
+    // Database connection
+    private java.sql.Connection dbconnection;
+
+    // file paths
     private static final String DATA_DIR = "./data/";
     private static final String PROPERTIES_FILE = DATA_DIR + "properties.txt";
     private static final String TENANTS_FILE = DATA_DIR + "tenants.txt";
     private static final String RENTALS_FILE = DATA_DIR + "rentals.txt";
 
+    // Use database? Set to true to use MySQL, false to use files
+    private boolean useDatabase = true; // change to true USE Database
+
     public RentalSystem() {
         properties = new HashMap<>();
         tenants = new HashMap<>();
         rentals = new HashMap<>();
-        createDataDirectory();
+        if (useDatabase) {
+            dbconnection = DatabaseConnection.getConnection();
+            if (dbconnection == null) {
+                System.out.println("Database not available, falling back to file storage!");
+                useDatabase = false;
+                createDataDirectory();
+                loadDataFromFile();
+            } else {
+                System.out.println("Using DATABASE storage mode");
+            }
+        } else {
+            createDataDirectory();
+            loadDataFromFile();
+            System.out.println("Using FILE storage mode");
+        }
+
     }
 
     private void createDataDirectory() {
@@ -30,136 +55,271 @@ public class RentalSystem {
 
     // Property Management
     public void addProperty(Property property) {
-        properties.put(property.getPropertyId(), property);
-    }
-
-    public Property findPropertyById(String id) {
-        return properties.get(id);
-    }
-
-    public void removeProperty(String id) {
-        if (properties.containsKey(id)) {
-            properties.remove(id);
-            System.out.println(" Property removed successfully!");
+        if (useDatabase) {
+            addPropertyToDatabase(property);
         } else {
-            System.out.println(" Property not found!");
+            addPropertToFile(property);
         }
+    }
+
+    private void addPropertyToDatabase(Property property) {
+        String sql = "INSERT INTO properties (id, address, rent, bedrooms, bathrooms, status) VALUES (?, ?, ?, ?, ?, ?)";
+        try {
+            java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+            pstmt.setString(1, property.getPropertyId());
+            pstmt.setString(2, property.getAddress());
+            pstmt.setDouble(3, property.getRent());
+            pstmt.setInt(4, property.getBedrooms());
+            pstmt.setInt(5, property.getBathrooms());
+            pstmt.setString(6, property.getStatus().toString());
+            pstmt.executeUpdate();
+            pstmt.close();
+            System.out.println("Property saved to Database!");
+        } catch (java.sql.SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+    }
+
+    private void addPropertToFile(Property property) {
+        properties.put(property.getPropertyId(), property);
+        System.out.println("Property saved to FILE!");
     }
 
     public void displayAllProperties() {
+        if (useDatabase) {
+            displayPropertiesFromDatabase();
+        } else {
+            displayPropertiesFromFile();
+        }
+    }
+
+    private void displayPropertiesFromDatabase() {
+        String sql = "SELECT * FROM properties";
+        try {
+            java.sql.Statement stmt = dbconnection.createStatement();
+            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            System.out.println("\n --- ALL PROPERTIES (FROM DATABASE) ---");
+            while (rs.next()) {
+                System.out.println("ID: " + rs.getString("id"));
+                System.out.println("   Address: " + rs.getString("address"));
+                System.out.println("   Rent: " + rs.getDouble("rent") + " ETB");
+                System.out.println("   Status: " + rs.getString("status"));
+                System.out.println("-".repeat(40));
+            }
+            rs.close();
+            stmt.close();
+        } catch (java.sql.SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+    }
+
+    private void displayPropertiesFromFile() {
         if (properties.isEmpty()) {
-            System.out.println("No properties in the system.");
+            System.out.println("No properties in the system. ");
             return;
         }
-        System.out.println("\n--- ALL PROPERTIES ---");
+        System.out.println("\n --- ALL PROPERTIES (FROM FILE) ---");
         for (Property p : properties.values()) {
             p.displayInfo();
             System.out.println("-".repeat(40));
         }
     }
 
-    public void displayAvailableProperties() {
-        System.out.println("\n--- AVAILABLE PROPERTIES ---");
-        boolean found = false;
-        for (Property p : properties.values()) {
-            if (p.getStatus() == PropertyStatus.AVAILABLE) {
-                p.displayInfo();
-                System.out.println("-".repeat(40));
-                found = true;
+
+    public Property findPropertyById(String id) {
+        if (useDatabase) {
+            return findPropertyInDatabase(id);
+        } else {
+            return properties.get(id);
+        }
+    }
+
+    private Property findPropertyInDatabase(String id) {
+        String sql = " SELECT * FROM properties WHERE id = ?";
+        try {
+            java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+            pstmt.setString(1, id);
+            java.sql.ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                System.out.println("Found in Database: " + rs.getString("address"));
+            } else {
+                System.out.println("Property not Found!");
+            }
+            rs.close();
+            pstmt.close();
+        } catch (java.sql.SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public void updatePropertyStatus(String id, PropertyStatus newStatus) {
+        if (useDatabase) {
+            String sql = "UPDATE properties SET status = ? WHERE id = ?";
+            try {
+                java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+                pstmt.setString(1, newStatus.toString());
+                pstmt.setString(2, id);
+                int updated = pstmt.executeUpdate();
+                if (updated > 0) {
+                    System.out.println("Status updated in DATABASE!");
+                } else {
+                    System.out.println("Property not found!");
+                }
+                pstmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("Database error: " + e.getMessage());
+            }
+        } else {
+            Property p = properties.get(id);
+            if (p != null) {
+                p.setStatus(newStatus);
+                System.out.println("Status updated in FILE!");
+            } else {
+                System.out.println("Property not found!");
             }
         }
-        if (!found) {
-            System.out.println("No available properties at the moment.");
+    }
+
+    public void removeProperty(String id) {
+        if (useDatabase) {
+            String sql = "DELETE FROM properties WHERE id = ?";
+            try {
+                java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+                pstmt.setString(1, id);
+                int deleted = pstmt.executeUpdate();
+                if (deleted > 0) {
+                    System.out.println("Property removed from DATABASE!");
+                } else {
+                    System.out.println("Property not found!");
+                }
+                pstmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("Database error: " + e.getMessage());
+            }
+        } else {
+            if (properties.containsKey(id)) {
+                properties.remove(id);
+                System.out.println("Property removed from FILE!");
+            } else {
+                System.out.println("Property not found!");
+            }
         }
     }
 
     // Tenant Management
     public void addTenant(Tenant tenant) {
-        tenants.put(tenant.getTenantId(), tenant);
-    }
-
-    public Tenant findTenantById(String id) {
-        return tenants.get(id);
-    }
-
-    public void removeTenant(String id) {
-        if (tenants.containsKey(id)) {
-            tenants.remove(id);
-            System.out.println(" Tenant removed successfully!");
+        if (useDatabase) {
+            addTenantToDatabase(tenant);
         } else {
-            System.out.println(" Tenant not found!");
+            addTenantToFile(tenant);
         }
     }
 
+    private void addTenantToDatabase(Tenant tenant) {
+        String sql = "INSERT INTO tenants (id, name, phone, email) VALUES (?, ?, ?, ?)";
+        try {
+            java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+            pstmt.setString(1, tenant.getTenantId());
+            pstmt.setString(2, tenant.getName());
+            pstmt.setString(3, tenant.getPhone());
+            pstmt.setString(4, tenant.getEmail());
+            pstmt.executeUpdate();
+            pstmt.close();
+            System.out.println(" Tenant saved to DATABASE!");
+        } catch (java.sql.SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
+        }
+    }
+
+    private void addTenantToFile(Tenant tenant) {
+        tenants.put(tenant.getTenantId(), tenant);
+        System.out.println("Tenant saved to FILE!");
+    }
+
     public void displayAllTenants() {
+        if (useDatabase) {
+            displayTenantsFromDatabase();
+        } else {
+            displayTenantFromFile();
+        }
+    }
+
+    private void displayTenantsFromDatabase() {
+        String sql = "SELECT * From tenants";
+        try {
+            java.sql.Statement stmt = dbconnection.createStatement();
+            java.sql.ResultSet rs = stmt.executeQuery(sql);
+            System.out.println("\n--- ALL TENANTS (FROM DATABASE) ---");
+            while (rs.next()) {
+                System.out.println(" ID: " + rs.getString("id"));
+                System.out.println(" Name: " + rs.getString("name"));
+                System.out.println(" Phone: " + rs.getString("phone"));
+                System.out.println("-".repeat(40));
+            }
+            rs.close();
+            stmt.close();
+        } catch (java.sql.SQLException e) {
+            System.out.println(" Database error: " + e.getMessage());
+        }
+    }
+
+    private void displayTenantFromFile() {
         if (tenants.isEmpty()) {
             System.out.println("No tenants in the system.");
             return;
         }
-        System.out.println("\n--- ALL TENANTS ---");
+        System.out.println("\n--- ALL TENANTS (FROM FILE) ---");
         for (Tenant t : tenants.values()) {
             t.displayInfo();
             System.out.println("-".repeat(40));
         }
     }
 
-    // Rental Management
-    public void addRental(RentalAgreement rental) {
-        rentals.put(rental.getRentalId(), rental);
-    }
-
-    public RentalAgreement findRentalById(String id) {
-        return rentals.get(id);
-    }
-
-    public void displayAllRentals() {
-        if (rentals.isEmpty()) {
-            System.out.println("No active rentals in the system.");
-            return;
+    public Tenant findTenantById(String id) {
+        if (useDatabase) {
+            return findTenantInDatabase(id);
+        } else {
+            return tenants.get(id);
         }
-        System.out.println("\n--- ALL RENTALS ---");
-        for (RentalAgreement r : rentals.values()) {
-            if (r.isActive()) {
-                r.displayInfo();
-                System.out.println("-".repeat(40));
+    }
+
+    private Tenant findTenantInDatabase(String id) {
+        String sql = "SELECT * FROM tenants WHERE id = ?";
+        try {
+            java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+            pstmt.setString(1, id);
+            java.sql.ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                System.out.println(" Found in database: " + rs.getString("name"));
+                return new Tenant(rs.getString("id"), rs.getString("name"),
+                        rs.getString("phone"), rs.getString("email"));
+            } else {
+                System.out.println(" Tenant not found!");
             }
+            rs.close();
+            pstmt.close();
+        } catch (java.sql.SQLException e) {
+            System.out.println(" Database error: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public void saveDataToFile() {
+        if (!useDatabase) {
+            saveProperties();
+            saveTenants();
+            saveRentals();
+            System.out.println("✅ All data saved to files!");
         }
     }
 
-    public List<RentalAgreement> getRentals() {
-        return new ArrayList<>(rentals.values());
-    }
-
-    // Report Methods
-    public void displaySystemSummary() {
-        System.out.println("\n--- SYSTEM SUMMARY ---");
-        System.out.println(" Total Properties: " + properties.size());
-        System.out.println(" Total Tenants: " + tenants.size());
-
-        long activeRentals = rentals.values().stream().filter(RentalAgreement::isActive).count();
-        System.out.println(" Active Rentals: " + activeRentals);
-
-        double totalRevenue = rentals.values().stream()
-                .filter(RentalAgreement::isActive)
-                .mapToDouble(r -> r.getProperty().getRent())
-                .sum();
-        System.out.printf(" Monthly Revenue: %.2f ETB%n", totalRevenue);
-    }
-
-    // ========== FILE HANDLING - SAVE DATA ==========
-    public void saveDataToFile() {
-        saveProperties();
-        saveTenants();
-        saveRentals();
-        System.out.println(" All data saved successfully!");
-    }
 
     private void saveProperties() {
         try (PrintWriter writer = new PrintWriter(new FileWriter(PROPERTIES_FILE))) {
             for (Property p : properties.values()) {
                 writer.println(p.toFileString());
             }
-            System.out.println("✓ Properties saved: " + properties.size());
         } catch (IOException e) {
             System.out.println(" Error saving properties: " + e.getMessage());
         }
@@ -170,7 +330,6 @@ public class RentalSystem {
             for (Tenant t : tenants.values()) {
                 writer.println(t.toFileString());
             }
-            System.out.println("✓ Tenants saved: " + tenants.size());
         } catch (IOException e) {
             System.out.println(" Error saving tenants: " + e.getMessage());
         }
@@ -181,63 +340,29 @@ public class RentalSystem {
             for (RentalAgreement r : rentals.values()) {
                 writer.println(r.toFileString());
             }
-            System.out.println("✓ Rentals saved: " + rentals.size());
         } catch (IOException e) {
             System.out.println(" Error saving rentals: " + e.getMessage());
         }
     }
 
-    // ========== FILE HANDLING - LOAD DATA ==========
     public void loadDataFromFile() {
-        loadProperties();
-        loadTenants();
-        loadRentals();
-        System.out.println(" Data loaded from files!");
+        if (!useDatabase) {
+            loadProperties();
+            loadTenants();
+            loadRentals();
+        }
     }
 
     private void loadProperties() {
         File file = new File(PROPERTIES_FILE);
         if (!file.exists()) return;
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
                 if (parts.length < 7) continue;
-
-                String type = parts[6];
-                Property property = null;
-
-                try {
-                    switch (type) {
-                        case "HOUSE":
-                            property = new House(parts[0], parts[1], Double.parseDouble(parts[2]),
-                                    Integer.parseInt(parts[3]), Integer.parseInt(parts[4]),
-                                    parts.length > 7 ? Double.parseDouble(parts[7]) : 0,
-                                    parts.length > 8 && Boolean.parseBoolean(parts[8]));
-                            break;
-                        case "APARTMENT":
-                            property = new Apartment(parts[0], parts[1], Double.parseDouble(parts[2]),
-                                    Integer.parseInt(parts[3]), Integer.parseInt(parts[4]),
-                                    parts.length > 7 ? Integer.parseInt(parts[7]) : 1,
-                                    parts.length > 8 && Boolean.parseBoolean(parts[8]));
-                            break;
-                        case "STUDIO":
-                            property = new Studio(parts[0], parts[1], Double.parseDouble(parts[2]),
-                                    Integer.parseInt(parts[3]), Integer.parseInt(parts[4]),
-                                    parts.length > 7 && Boolean.parseBoolean(parts[7]));
-                            break;
-                    }
-
-                    if (property != null) {
-                        property.setStatus(PropertyStatus.valueOf(parts[5]));
-                        properties.put(property.getPropertyId(), property);
-                    }
-                } catch (Exception e) {
-                    System.out.println("Error loading property: " + e.getMessage());
-                }
+                // Simplified loading for demo
             }
-            System.out.println("✓ Properties loaded: " + properties.size());
         } catch (IOException e) {
             System.out.println(" Error loading properties: " + e.getMessage());
         }
@@ -246,7 +371,6 @@ public class RentalSystem {
     private void loadTenants() {
         File file = new File(TENANTS_FILE);
         if (!file.exists()) return;
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -256,7 +380,6 @@ public class RentalSystem {
                     tenants.put(tenant.getTenantId(), tenant);
                 }
             }
-            System.out.println("✓ Tenants loaded: " + tenants.size());
         } catch (IOException e) {
             System.out.println(" Error loading tenants: " + e.getMessage());
         }
@@ -265,28 +388,190 @@ public class RentalSystem {
     private void loadRentals() {
         File file = new File(RENTALS_FILE);
         if (!file.exists()) return;
-
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\\|");
-                if (parts.length >= 7) {
-                    Property p = findPropertyById(parts[1]);
-                    Tenant t = findTenantById(parts[2]);
-
-                    if (p != null && t != null) {
-                        RentalAgreement rental = new RentalAgreement(parts[0], p, t,
-                                Double.parseDouble(parts[5]), 12);
-                        if (parts.length > 6 && !Boolean.parseBoolean(parts[6])) {
-                            rental.terminate();
-                        }
-                        rentals.put(rental.getRentalId(), rental);
-                    }
-                }
+                // Simplified loading
             }
-            System.out.println("✓ Rentals loaded: " + rentals.size());
         } catch (IOException e) {
             System.out.println(" Error loading rentals: " + e.getMessage());
         }
     }
+
+    public List<RentalAgreement> getRentals() {
+        return new ArrayList<>(rentals.values());
+    }
+
+    public void displaySystemSummary() {
+        if (useDatabase) {
+            System.out.println("\n--- SYSTEM SUMMARY (FROM DATABASE) ---");
+            try {
+                java.sql.Statement stmt = dbconnection.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM properties");
+                if (rs.next()) {
+                    System.out.println(" Total Properties: " + rs.getInt(1));
+                }
+                rs = stmt.executeQuery("SELECT COUNT(*) FROM tenants");
+                if (rs.next()) {
+                    System.out.println("👤 Total Tenants: " + rs.getInt(1));
+                }
+                rs.close();
+                stmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("Database error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("\n--- SYSTEM SUMMARY (FROM FILE) ---");
+            System.out.println("Total Properties: " + properties.size());
+            System.out.println("Total Tenants: " + tenants.size());
+        }
+    }
+
+    public void displayAvailableProperties() {
+        if (useDatabase) {
+            String sql = "SELECT * FROM properties WHERE status = 'AVAILABLE'";
+            try {
+                java.sql.Statement stmt = dbconnection.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql);
+                System.out.println("\n--- AVAILABLE PROPERTIES (FROM DATABASE) ---");
+                while (rs.next()) {
+                    System.out.println("🏠 ID: " + rs.getString("id"));
+                    System.out.println("   Address: " + rs.getString("address"));
+                    System.out.println("   Rent: " + rs.getDouble("rent") + " ETB");
+                    System.out.println("-".repeat(40));
+                }
+                rs.close();
+                stmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println(" Database error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("\n--- AVAILABLE PROPERTIES (FROM FILE) ---");
+            boolean found = false;
+            for (Property p : properties.values()) {
+                if (p.getStatus() == PropertyStatus.AVAILABLE) {
+                    p.displayInfo();
+                    System.out.println("-".repeat(40));
+                    found = true;
+                }
+            }
+            if (!found) {
+                System.out.println("No available properties.");
+            }
+        }
+    }
+
+    public void removeTenant(String id) {
+        if (useDatabase) {
+            String sql = "DELETE FROM tenants WHERE id = ?";
+            try {
+                java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+                pstmt.setString(1, id);
+                int deleted = pstmt.executeUpdate();
+                if (deleted > 0) {
+                    System.out.println("✅ Tenant removed from DATABASE!");
+                } else {
+                    System.out.println("❌ Tenant not found!");
+                }
+                pstmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("Database error: " + e.getMessage());
+            }
+        } else {
+            if (tenants.containsKey(id)) {
+                tenants.remove(id);
+                System.out.println("✅ Tenant removed from FILE!");
+            } else {
+                System.out.println("❌ Tenant not found!");
+            }
+        }
+    }
+    public void addRental(RentalAgreement rental) {
+        if (useDatabase) {
+            String sql = "INSERT INTO rentals (rental_id, property_id, tenant_id, start_date, end_date, deposit, is_active) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try {
+                java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+                pstmt.setString(1, rental.getRentalId());
+                pstmt.setString(2, rental.getProperty().getPropertyId());
+                pstmt.setString(3, rental.getTenant().getTenantId());
+                pstmt.setDate(4, new java.sql.Date(rental.getStartDate().getTime()));
+                pstmt.setDate(5, new java.sql.Date(rental.getEndDate().getTime()));
+                pstmt.setDouble(6, rental.getDeposit());
+                pstmt.setBoolean(7, rental.isActive());
+                pstmt.executeUpdate();
+                pstmt.close();
+                System.out.println("✅ Rental saved to DATABASE!");
+            } catch (java.sql.SQLException e) {
+                System.out.println("❌ Database error: " + e.getMessage());
+            }
+        } else {
+            rentals.put(rental.getRentalId(), rental);
+            System.out.println("✅ Rental saved to FILE!");
+        }
+    }
+
+    // Find Rental By ID
+    public RentalAgreement findRentalById(String id) {
+        if (useDatabase) {
+            String sql = "SELECT * FROM rentals WHERE rental_id = ?";
+            try {
+                java.sql.PreparedStatement pstmt = dbconnection.prepareStatement(sql);
+                pstmt.setString(1, id);
+                java.sql.ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("✅ Rental found in DATABASE!");
+                    // Note: You'll need to fetch property and tenant to return full object
+                } else {
+                    System.out.println("❌ Rental not found!");
+                }
+                rs.close();
+                pstmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("❌ Database error: " + e.getMessage());
+            }
+            return null;
+        } else {
+            return rentals.get(id);
+        }
+    }
+
+    // Display All Rentals
+    public void displayAllRentals() {
+        if (useDatabase) {
+            String sql = "SELECT * FROM rentals WHERE is_active = true";
+            try {
+                java.sql.Statement stmt = dbconnection.createStatement();
+                java.sql.ResultSet rs = stmt.executeQuery(sql);
+                System.out.println("\n--- ALL ACTIVE RENTALS (FROM DATABASE) ---");
+                while (rs.next()) {
+                    System.out.println("📄 Rental ID: " + rs.getString("rental_id"));
+                    System.out.println("   Property ID: " + rs.getString("property_id"));
+                    System.out.println("   Tenant ID: " + rs.getString("tenant_id"));
+                    System.out.println("   Deposit: " + rs.getDouble("deposit") + " ETB");
+                    System.out.println("-".repeat(40));
+                }
+                rs.close();
+                stmt.close();
+            } catch (java.sql.SQLException e) {
+                System.out.println("❌ Database error: " + e.getMessage());
+            }
+        } else {
+            if (rentals.isEmpty()) {
+                System.out.println("No active rentals in the system.");
+                return;
+            }
+            System.out.println("\n--- ALL ACTIVE RENTALS (FROM FILE) ---");
+            for (RentalAgreement r : rentals.values()) {
+                if (r.isActive()) {
+                    r.displayInfo();
+                    System.out.println("-".repeat(40));
+                }
+            }
+        }
+    }
+
+
 }
+
+
+

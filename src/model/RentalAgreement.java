@@ -47,6 +47,18 @@ public class RentalAgreement {
         return tenant;
     }
 
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public double getDeposit() {
+        return deposit;
+    }
+
     public boolean isActive() {
         return isActive;
     }
