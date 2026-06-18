@@ -569,9 +569,7 @@ public class RentalSystem {
         }
     }
 
-        tenants.put(
-                tenant1.getTenantId(),
-                tenant1);
+        
 
 }
 
