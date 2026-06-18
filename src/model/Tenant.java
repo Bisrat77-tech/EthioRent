@@ -1,11 +1,13 @@
 package model;
 
-public class Tenant {
+import java.util.*;
 
+public class Tenant {
     private String tenantId;
-    private String fullName;
-    private String phoneNumber;
+    private String name;
+    private String phone;
     private String email;
+    private List<RentalAgreement> rentalHistory;
 
     // constructor
     public Tenant(String tenantId, String name, String phone, String email){
@@ -60,8 +62,4 @@ public class Tenant {
         return tenantId + "|" + name + "|" + phone + "|" + email;
     }
 
-    @Override
-    public String toString() {
-        return toFileString();
-    }
 }
