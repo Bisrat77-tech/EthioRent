@@ -1,7 +1,7 @@
 package model;
 
 public enum PropertyStatus {
-AVAILABLE,
-RENTED,
-MAINTENANCE
+    AVAILABLE,
+    RENTED,
+    MAINTENANCE
 }
