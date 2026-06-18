@@ -7,50 +7,57 @@ public class Tenant {
     private String phoneNumber;
     private String email;
 
-    public Tenant(String tenantId, String fullName,
-                  String phoneNumber, String email) {
-
+    // constructor
+    public Tenant(String tenantId, String name, String phone, String email){
         this.tenantId = tenantId;
-        this.fullName = fullName;
-        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.phone = phone;
         this.email = email;
+        this.rentalHistory = new ArrayList<>();
     }
+    // getters
 
     public String getTenantId() {
         return tenantId;
     }
 
-    public String getFullName() {
-        return fullName;
+
+    public String getName() {
+        return name;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getPhone() {
+        return phone;
     }
 
     public String getEmail() {
         return email;
     }
+    //setters
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public void displayInfo() {
-        System.out.println("---- TENANT ----");
-        System.out.println("ID: " + tenantId);
-        System.out.println("Name: " + fullName);
-        System.out.println("Phone: " + phoneNumber);
-        System.out.println("Email: " + email);
+    // Methods
+    public void addRentalHistory(RentalAgreement rental){
+        rentalHistory.add(rental);
     }
-
-    public String toFileString() {
-        return tenantId + "|" + fullName + "|" +
-                phoneNumber + "|" + email;
+    // Display Method
+    public void displayInfo(){
+        System.out.println("=== TENANT INFORMATION ===");
+        System.out.println("ID: " + tenantId);
+        System.out.println("Name: " + name);
+        System.out.println("Phone: " + phone);
+        System.out.println("Email: " + email);
+        System.out.println("Past Rentals: " + rentalHistory.size());
+    }
+    // File Storage Method
+    public String toFileString(){
+        return tenantId + "|" + name + "|" + phone + "|" + email;
     }
 
     @Override

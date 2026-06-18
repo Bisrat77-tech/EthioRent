@@ -8,9 +8,8 @@ public abstract class Property {
     protected int bedrooms;
     protected int bathrooms;
     protected PropertyStatus status;
-
-    // Constructor, getters
-    public Property (String propertyId, String address, double rent, int bedrooms, int bathrooms) {
+// Constructor
+    public Property(String propertyId, String address, double rent, int bedrooms, int bathrooms){
         this.propertyId = propertyId;
         this.address = address;
         this.rent = rent;
@@ -18,8 +17,8 @@ public abstract class Property {
         this.bathrooms = bathrooms;
         this.status = PropertyStatus.AVAILABLE;
     }
-
-    public String getPropertyId() {
+// Getters
+    public String getPropertyId(){
         return propertyId;
     }
 
@@ -42,20 +41,19 @@ public abstract class Property {
     public PropertyStatus getStatus() {
         return status;
     }
+// Setter
 
     public void setStatus(PropertyStatus status) {
         this.status = status;
     }
 
     public abstract void displayInfo();
+
     protected abstract String getType();
 
-    public String toFileString() {
-        return propertyId + "|" + address + "|" + rent + "|" + bedrooms + "|" + bathrooms + "|" + status + "|" + getType();
-    }
-
-    @Override
-    public String toString() {
-        return toFileString();
+    public String toFileString(){
+        return propertyId + "|" + address + "|" + rent + "|" +
+                bedrooms + "|" + bathrooms + "|" + status + "|" +
+                getType();
     }
 }

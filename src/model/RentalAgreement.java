@@ -1,5 +1,7 @@
 package model;
 
+import service.RentalSystem;
+
 import java.util.*;
 
 public class RentalAgreement {
@@ -13,42 +15,27 @@ public class RentalAgreement {
     private boolean isActive;
     private List<Double> paymentHistory;
 
-    public RentalAgreement(String rentalId,
-                           Property property,
-                           Tenant tenant,
-                           Date startDate,
-                           Date endDate,
-                           double deposit) {
-
+    // constructor
+    public RentalAgreement(String rentalId, Property property, Tenant tenant, double deposit,
+                           int durationMonths) {
         this.rentalId = rentalId;
         this.property = property;
         this.tenant = tenant;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.deposit = deposit;
+        this.startDate = new Date();
         this.isActive = true;
         this.paymentHistory = new ArrayList<>();
 
-        property.setStatus(PropertyStatus.RENTED);
-    }
 
-    public void recordPayment(double amount) {
-        paymentHistory.add(amount);
-    }
+ //Calculate end date by adding duration months to start date
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, durationMonths);
+        this.endDate = cal.getTime();
 
-    public double getTotalPayments() {
-        double total = 0;
-        for (double p : paymentHistory) {
-            total += p;
-        }
-        return total;
+// Add this rental to tenant's history
+        tenant.addRentalHistory(this);
     }
-
-    public void terminateAgreement() {
-        isActive = false;
-        property.setStatus(PropertyStatus.AVAILABLE);
-    }
-
+// Getter Methods
     public String getRentalId() {
         return rentalId;
     }
@@ -61,16 +48,57 @@ public class RentalAgreement {
         return tenant;
     }
 
-    public void displayInfo() {
+    public Date getStartDate() {
+        return startDate;
+    }
 
-        System.out.println("---- RENTAL AGREEMENT ----");
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public double getDeposit() {
+        return deposit;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+// Business Methods - Record Payment
+    public void recordPayment(double amount){
+        if(!isActive){
+            System.out.println("Cannot record payment for terminated rental!");
+            return;
+        }
+        if (amount >= property.getRent()){
+            paymentHistory.add(amount);
+            System.out.printf("Payment of %.2f ETB recordedmfor %s%n", amount, rentalId);
+            if (amount > property.getRent()){
+                System.out.printf(" Overpayment: %.2f ETB (credit applied)%n", amount - property.getRent());
+            }
+
+        }else {
+            System.out.println("Payment amount is less than monthly rent!");
+        }
+    }
+    // BUSINESS METHOD - Terminate Agreement
+
+    public void terminate(){
+        this.isActive = false; // Simply set active flag to false
+    }
+    // Display Method
+
+    public void displayInfo(){
+        System.out.println("=== RENTAL AGREEMENT ===");
         System.out.println("Rental ID: " + rentalId);
-        System.out.println("Property: " + property.getPropertyId());
-        System.out.println("Tenant: " + tenant.getFullName());
-        System.out.println("Deposit: " + deposit);
-        System.out.println("Start: " + startDate);
-        System.out.println("End: " + endDate);
-        System.out.println("Active: " + isActive);
-        System.out.println("Total Payments: " + getTotalPayments());
+        System.out.println("Property: " + property.getAddress());
+        System.out.println("Tenant: " + tenant.getName());
+        System.out.println("Start Date: " + startDate);
+        System.out.println("End Date: " + endDate);
+        System.out.println("Deposit: " + deposit + " ETB");
+        System.out.println("Status: " + (isActive ? "ACTIVE" : "TERMINATED"));
+        System.out.println("Payments Made: " + paymentHistory.size());
+    }
+    public String toFileString(){
+        return rentalId + "|" + property.getPropertyId() + "|" + deposit + "|" + isActive;
     }
 }
