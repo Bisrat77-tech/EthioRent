@@ -5,6 +5,7 @@ import service.RentalSystem;
 import java.util.*;
 
 public class RentalAgreement {
+
     private String rentalId;
     private Property property;
     private Tenant tenant;

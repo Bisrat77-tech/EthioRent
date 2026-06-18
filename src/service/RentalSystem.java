@@ -19,7 +19,6 @@ public class RentalSystem {
     private static final String DATA_DIR = "./data/";
     private static final String PROPERTIES_FILE = DATA_DIR + "properties.txt";
     private static final String TENANTS_FILE = DATA_DIR + "tenants.txt";
-    private static final String RENTALS_FILE = DATA_DIR + "rentals.txt";
 
     // Use database? Set to true to use MySQL, false to use files
     private boolean useDatabase = true; // change to true USE Database
@@ -570,6 +569,9 @@ public class RentalSystem {
         }
     }
 
+        tenants.put(
+                tenant1.getTenantId(),
+                tenant1);
 
 }
 
