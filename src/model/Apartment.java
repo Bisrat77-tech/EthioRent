@@ -4,7 +4,7 @@ public class Apartment extends Property {
     private int floor;
     private boolean hasElevator;
 
-    // constructor
+    
 
     public Apartment (String propertyId, String address, double rent, int bedroom,
                       int bathrooms, int floor, boolean hasElevator){
@@ -12,7 +12,7 @@ public class Apartment extends Property {
         this.floor = floor;
         this.hasElevator = hasElevator;
     }
-    // Override
+    
     public void displayInfo(){
         System.out.println("=== APARTMENT ===");
         System.out.println("ID: " + propertyId);
@@ -29,7 +29,7 @@ public class Apartment extends Property {
         return "APARTMENT";
     }
 
-// Getters
+
     public int getFloor() {
         return floor;
     }
