@@ -11,23 +11,6 @@
 
 </div>
 
----
-
-## 📋 Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [OOP Concepts Demonstrated](#oop-concepts-demonstrated)
-- [Project Structure](#project-structure)
-- [Installation & Setup](#installation--setup)
-- [How to Run](#how-to-run)
-- [Usage Guide](#usage-guide)
-- [File Handling](#file-handling)
-- [Team Members](#team-members)
-- [Technologies Used](#technologies-used)
-- [License](#license)
-
----
 
 ## 🎯 Overview
 
