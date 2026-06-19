@@ -9,7 +9,8 @@ public class Tenant {
     private String email;
     private List<RentalAgreement> rentalHistory;
 
-    // constructor
+    
+    
     public Tenant(String tenantId, String name, String phone, String email){
         this.tenantId = tenantId;
         this.name = name;
@@ -17,7 +18,8 @@ public class Tenant {
         this.email = email;
         this.rentalHistory = new ArrayList<>();
     }
-    // getters
+   
+    
 
     public String getTenantId() {
         return tenantId;
@@ -35,7 +37,8 @@ public class Tenant {
     public String getEmail() {
         return email;
     }
-    //setters
+    
+    
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -44,11 +47,13 @@ public class Tenant {
     public void setEmail(String email) {
         this.email = email;
     }
-    // Methods
+    
+    
     public void addRentalHistory(RentalAgreement rental){
         rentalHistory.add(rental);
     }
-    // Display Method
+    
+    
     public void displayInfo(){
         System.out.println("=== TENANT INFORMATION ===");
         System.out.println("ID: " + tenantId);
@@ -57,7 +62,8 @@ public class Tenant {
         System.out.println("Email: " + email);
         System.out.println("Past Rentals: " + rentalHistory.size());
     }
-    // File Storage Method
+   
+    
     public String toFileString(){
         return tenantId + "|" + name + "|" + phone + "|" + email;
     }
