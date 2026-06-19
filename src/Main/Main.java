@@ -11,7 +11,7 @@ public class Main {
         // Load existing data
         rentalSystem.loadDataFromFile();
 
-        System.out.println("\n🏠 WELCOME TO ETHIORENT - HOUSE RENTAL SYSTEM 🏠");
+        System.out.println("\n WELCOME TO ETHIORENT - HOUSE RENTAL SYSTEM ");
 
         while (true) {
             displayMainMenu();
@@ -31,13 +31,13 @@ public class Main {
                     displayReports();
                     break;
                 case 5:
-                    System.out.println("\n💾 Saving data...");
+                    System.out.println("\n Saving data...");
                     rentalSystem.saveDataToFile();
-                    System.out.println("👋 Thank you for using EthioRent!");
+                    System.out.println(" Thank you for using EthioRent!");
                     System.exit(0);
                     break;
                 default:
-                    System.out.println("❌ Invalid choice! Please enter 1-5.");
+                    System.out.println(" Invalid choice! Please enter 1-5.");
             }
         }
     }
@@ -46,13 +46,13 @@ public class Main {
 
     private static void displayMainMenu() {
         System.out.println("\n" + "=".repeat(55));
-        System.out.println("     🏠 ETHIORENT - MAIN MENU 🏠");
+        System.out.println("      ETHIORENT - MAIN MENU ");
         System.out.println("=".repeat(55));
-        System.out.println("1. 🏢 Manage Properties");
-        System.out.println("2. 👤 Manage Tenants");
-        System.out.println("3. 📄 Manage Rentals");
-        System.out.println("4. 📊 View Reports");
-        System.out.println("5. 🚪 Exit");
+        System.out.println("1. Manage Properties");
+        System.out.println("2.  Manage Tenants");
+        System.out.println("3. Manage Rentals");
+        System.out.println("4.  View Reports");
+        System.out.println("5.  Exit");
         System.out.println("=".repeat(55));
     }
 
@@ -60,7 +60,7 @@ public class Main {
 
     private static void manageProperties() {
         while (true) {
-            System.out.println("\n--- 🏢 PROPERTY MANAGEMENT ---");
+            System.out.println("\n---  PROPERTY MANAGEMENT ---");
             System.out.println("1. Add New Property");
             System.out.println("2. View All Properties");
             System.out.println("3. Search Property");
@@ -89,7 +89,7 @@ public class Main {
                 case 6:
                     return;
                 default:
-                    System.out.println("❌ Invalid choice!");
+                    System.out.println(" Invalid choice!");
             }
         }
     }
@@ -97,9 +97,9 @@ public class Main {
     private static void addNewProperty() {
         System.out.println("\n--- ADD NEW PROPERTY ---");
         System.out.println("Property Types:");
-        System.out.println("1. 🏢 Apartment");
-        System.out.println("2. 🏠 House");
-        System.out.println("3. 🎨 Studio");
+        System.out.println("1.  Apartment");
+        System.out.println("2.  House");
+        System.out.println("3. Studio");
 
         int type = InputHelper.getIntInput("Select property type: ");
 
@@ -130,12 +130,12 @@ public class Main {
                 property = new Studio(id, address, rent, bedrooms, bathrooms, isFurnished);
                 break;
             default:
-                System.out.println("❌ Invalid property type!");
+                System.out.println(" Invalid property type!");
                 return;
         }
 
         rentalSystem.addProperty(property);
-        System.out.println("✅ Property added successfully!");
+        System.out.println(" Property added successfully!");
     }
 
     private static void searchProperty() {
@@ -144,7 +144,7 @@ public class Main {
         if (property != null) {
             property.displayInfo();
         } else {
-            System.out.println("❌ Property not found!");
+            System.out.println(" Property not found!");
         }
     }
 
@@ -159,12 +159,12 @@ public class Main {
             try {
                 PropertyStatus newStatus = PropertyStatus.valueOf(status);
                 rentalSystem.updatePropertyStatus(id, newStatus);
-                System.out.println("✅ Status updated to: " + newStatus);
+                System.out.println("Status updated to: " + newStatus);
             } catch (IllegalArgumentException e) {
-                System.out.println("❌ Invalid status! Use: AVAILABLE, RENTED, or MAINTENANCE");
+                System.out.println(" Invalid status! Use: AVAILABLE, RENTED, or MAINTENANCE");
             }
         } else {
-            System.out.println("❌ Property not found!");
+            System.out.println(" Property not found!");
         }
     }
 
@@ -177,7 +177,7 @@ public class Main {
 
     private static void manageTenants() {
         while (true) {
-            System.out.println("\n--- 👤 TENANT MANAGEMENT ---");
+            System.out.println("\n---  TENANT MANAGEMENT ---");
             System.out.println("1. Register New Tenant");
             System.out.println("2. View All Tenants");
             System.out.println("3. Search Tenant");
@@ -206,7 +206,7 @@ public class Main {
                 case 6:
                     return;
                 default:
-                    System.out.println("❌ Invalid choice!");
+                    System.out.println(" Invalid choice!");
             }
         }
     }
@@ -220,7 +220,7 @@ public class Main {
 
         Tenant tenant = new Tenant(id, name, phone, email);
         rentalSystem.addTenant(tenant);
-        System.out.println("✅ Tenant registered successfully!");
+        System.out.println(" Tenant registered successfully!");
     }
 
     private static void searchTenant() {
@@ -229,7 +229,7 @@ public class Main {
         if (tenant != null) {
             tenant.displayInfo();
         } else {
-            System.out.println("❌ Tenant not found!");
+            System.out.println(" Tenant not found!");
         }
     }
 
@@ -241,9 +241,9 @@ public class Main {
             String newEmail = InputHelper.getStringInput("New Email: ");
             tenant.setPhone(newPhone);
             tenant.setEmail(newEmail);
-            System.out.println("✅ Contact information updated!");
+            System.out.println(" Contact information updated!");
         } else {
-            System.out.println("❌ Tenant not found!");
+            System.out.println(" Tenant not found!");
         }
     }
 
@@ -256,7 +256,7 @@ public class Main {
 
     private static void manageRentals() {
         while (true) {
-            System.out.println("\n--- 📄 RENTAL MANAGEMENT ---");
+            System.out.println("\n---  RENTAL MANAGEMENT ---");
             System.out.println("1. Create New Rental Agreement");
             System.out.println("2. View All Active Rentals");
             System.out.println("3. Record Rent Payment");
@@ -281,7 +281,7 @@ public class Main {
                 case 5:
                     return;
                 default:
-                    System.out.println("❌ Invalid choice!");
+                    System.out.println("Invalid choice!");
             }
         }
     }
@@ -296,15 +296,15 @@ public class Main {
         Tenant tenant = rentalSystem.findTenantById(tenantId);
 
         if (property == null) {
-            System.out.println("❌ Property not found!");
+            System.out.println(" Property not found!");
             return;
         }
         if (tenant == null) {
-            System.out.println("❌ Tenant not found!");
+            System.out.println(" Tenant not found!");
             return;
         }
         if (property.getStatus() != PropertyStatus.AVAILABLE) {
-            System.out.println("❌ Property is not available for rent! Current status: " + property.getStatus());
+            System.out.println(" Property is not available for rent! Current status: " + property.getStatus());
             return;
         }
 
@@ -316,7 +316,7 @@ public class Main {
         rentalSystem.addRental(rental);
         property.setStatus(PropertyStatus.RENTED);
 
-        System.out.println("✅ Rental agreement created successfully!");
+        System.out.println(" Rental agreement created successfully!");
         System.out.println("   Rental ID: " + rentalId);
         System.out.println("   Property: " + property.getAddress());
         System.out.println("   Tenant: " + tenant.getName());
@@ -330,13 +330,13 @@ public class Main {
 
         if (rental != null) {
             if (!rental.isActive()) {
-                System.out.println("❌ Cannot record payment for terminated rental!");
+                System.out.println(" Cannot record payment for terminated rental!");
                 return;
             }
             double amount = InputHelper.getDoubleInput("Enter Payment Amount (ETB): ");
             rental.recordPayment(amount);
         } else {
-            System.out.println("❌ Rental agreement not found!");
+            System.out.println(" Rental agreement not found!");
         }
     }
 
@@ -346,7 +346,7 @@ public class Main {
 
         if (rental != null) {
             if (!rental.isActive()) {
-                System.out.println("❌ Rental is already terminated!");
+                System.out.println(" Rental is already terminated!");
                 return;
             }
             rental.terminate();
@@ -354,10 +354,10 @@ public class Main {
             if (property != null) {
                 property.setStatus(PropertyStatus.AVAILABLE);
             }
-            System.out.println("✅ Rental terminated successfully!");
+            System.out.println(" Rental terminated successfully!");
             System.out.println("   Property is now available for new tenants.");
         } else {
-            System.out.println("❌ Rental agreement not found!");
+            System.out.println(" Rental agreement not found!");
         }
     }
 
@@ -365,7 +365,7 @@ public class Main {
 
     private static void displayReports() {
         while (true) {
-            System.out.println("\n--- 📊 REPORTS & ANALYTICS ---");
+            System.out.println("\n--- REPORTS & ANALYTICS ---");
             System.out.println("1. System Summary");
             System.out.println("2. Available Properties");
             System.out.println("3. Monthly Revenue Report");
@@ -386,7 +386,7 @@ public class Main {
                 case 4:
                     return;
                 default:
-                    System.out.println("❌ Invalid choice!");
+                    System.out.println(" Invalid choice!");
             }
         }
     }
@@ -401,7 +401,7 @@ public class Main {
                 double rent = rental.getProperty().getRent();
                 totalMonthlyRevenue += rent;
                 activeRentalCount++;
-                System.out.printf("   📍 %s - %s: %.2f ETB/month%n",
+                System.out.printf("    %s - %s: %.2f ETB/month%n",
                         rental.getRentalId(),
                         rental.getProperty().getAddress(),
                         rent);
@@ -410,7 +410,7 @@ public class Main {
 
         System.out.println("-".repeat(45));
         System.out.println("   Active Rentals: " + activeRentalCount);
-        System.out.printf("   💰 TOTAL MONTHLY REVENUE: %.2f ETB%n", totalMonthlyRevenue);
+        System.out.printf("    TOTAL MONTHLY REVENUE: %.2f ETB%n", totalMonthlyRevenue);
         System.out.println("=".repeat(45));
     }
 }
