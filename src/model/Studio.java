@@ -2,7 +2,7 @@ package model;
 
 public class Studio extends Property{
     private boolean isFurnished;
-   // constructor
+   
     public Studio(String propertyId, String address, double rent, int bedrooms,
                   int bathrooms, boolean isFurnished){
         super(propertyId, address, rent, bedrooms, bathrooms);
@@ -18,12 +18,12 @@ public class Studio extends Property{
         System.out.println("Furnished: " + (isFurnished ? "Yes" : "No"));
         System.out.println("Status: " + status);
     }
-// Override
+
     @Override
     protected String getType() {
         return "STUDIO";
     }
-// Getters
+
     public boolean isFurnished(){return isFurnished;}
 
 }
