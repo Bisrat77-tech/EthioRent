@@ -175,11 +175,11 @@ java -cp ./classes Main
 ============================================================
      🏠 ETHIORENT - HOUSE RENTAL MANAGEMENT SYSTEM 🏠
 ============================================================
-1. 🏢 Manage Properties
-2. 👤 Manage Tenants
-3. 📄 Manage Rentals
-4. 📊 View Reports
-5. 🚪 Exit
+1. Manage Properties
+2. Manage Tenants
+3. Manage Rentals
+4. View Reports
+5. Exit
 ============================================================
 ```
 
