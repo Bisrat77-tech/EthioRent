@@ -47,7 +47,7 @@
 - Monthly revenue report
 - Real-time revenue calculation
 
-### 💾 Data Persistence
+### Data Persistence
 - Automatic data saving to text files
 - Data loading on application startup
 - Creates backup files automatically
@@ -204,14 +204,14 @@ Enter Tenant ID: T001
 Enter Rental ID: R001
 Enter Deposit Amount (ETB): 30000
 Enter Lease Duration (months): 12
-✅ Rental agreement created successfully!
+ Rental agreement created successfully!
 ```
 
 #### 4. Record Payment
 ```
 Enter Rental ID: R001
 Enter Payment Amount (ETB): 15000
-✅ Payment of 15000.00 ETB recorded for R001
+ Payment of 15000.00 ETB recorded for R001
 ```
 
 ---
@@ -241,10 +241,10 @@ R001|H001|T001|1700000000000|1731536000000|30000|true
 ### System Summary Report
 ```
 --- SYSTEM SUMMARY ---
-🏢 Total Properties: 5
-👤 Total Tenants: 3
-📄 Active Rentals: 2
-💰 Monthly Revenue: 35000.00 ETB
+ Total Properties: 5
+ Total Tenants: 3
+ Active Rentals: 2
+ Monthly Revenue: 35000.00 ETB
 ```
 
 ---
@@ -255,7 +255,7 @@ R001|H001|T001|1700000000000|1731536000000|30000|true
 |---|-------------------|------------------|-----------|
 | 1 | Bisrat Zenebe     | BITS/UGR/0022/26 | Developer |
 | 2 | Christina Solomon | BITS/UGR/0025/26 | Developer |
-| 3 | Aya Anwar         | BITS/UGR/0012/26 | Developer
+| 3 | Aya Anwar         | BITS/UGR/0012/26 | Developer |
 | 4 | Danawit Melkamu   | BITS/UGR/00229/26| Developer | 
 
 
@@ -293,7 +293,7 @@ R001|H001|T001|1700000000000|1731536000000|30000|true
 ## 📞 Contact
 
 - **GitHub:** [github.com/Bisrat77-tech](https://github.com/Bisrat77-tech) 
-             ,[github.com/Christina-2525](https://github.com/Christina-2525),[github.com/itzayaa](https://github.com/itzayaa)
+             ,[github.com/Christina-2525](https://github.com/Christina-2525),[github.com/itzayaa](https://github.com/itzayaa) ,[github.com/Avalon263](https://github.com/Avalon263)
 
 - **Repository:** [github.com/Bisrat77-tech/EthioRent](https://github.com/Bisrat77-tech/EthioRent)
 
