@@ -15,7 +15,7 @@ public class RentalAgreement {
     private boolean isActive;
     private List<Double> paymentHistory;
 
-    // constructor
+    
     public RentalAgreement(String rentalId, Property property, Tenant tenant, double deposit,
                            int durationMonths) {
         this.rentalId = rentalId;
@@ -27,15 +27,15 @@ public class RentalAgreement {
         this.paymentHistory = new ArrayList<>();
 
 
- //Calculate end date by adding duration months to start date
+ 
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, durationMonths);
         this.endDate = cal.getTime();
 
-// Add this rental to tenant's history
+
         tenant.addRentalHistory(this);
     }
-// Getter Methods
+
     public String getRentalId() {
         return rentalId;
     }
@@ -63,7 +63,7 @@ public class RentalAgreement {
     public boolean isActive() {
         return isActive;
     }
-// Business Methods - Record Payment
+
     public void recordPayment(double amount){
         if(!isActive){
             System.out.println("Cannot record payment for terminated rental!");
@@ -80,12 +80,12 @@ public class RentalAgreement {
             System.out.println("Payment amount is less than monthly rent!");
         }
     }
-    // BUSINESS METHOD - Terminate Agreement
+    
 
     public void terminate(){
-        this.isActive = false; // Simply set active flag to false
+        this.isActive = false; 
     }
-    // Display Method
+   
 
     public void displayInfo(){
         System.out.println("=== RENTAL AGREEMENT ===");
