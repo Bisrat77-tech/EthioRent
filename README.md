@@ -183,7 +183,7 @@ Enter Bedrooms: 3
 Enter Bathrooms: 2
 Enter Lot Size (sqm): 250
 Has Garden? (true/false): true
-✅ Property added successfully!
+ Property added successfully!
 ```
 
 #### 2. Register a Tenant
@@ -193,7 +193,7 @@ Enter Tenant ID: T001
 Enter Full Name: Bisrat Zenebe
 Enter Phone Number: 0912345678
 Enter Email: bisrat@example.com
-✅ Tenant registered successfully!
+Tenant registered successfully!
 ```
 
 #### 3. Create Rental Agreement
