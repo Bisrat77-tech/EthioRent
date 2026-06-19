@@ -51,14 +51,14 @@
 - Update tenant contact information
 - Remove tenants from the system
 
-### 📄 Rental Management
+### Rental Management
 - Create rental agreements between tenants and properties
 - View all active rentals
 - Record monthly rent payments
 - Terminate rental agreements
 - Automatic property status updates
 
-### 📊 Reports & Analytics
+### Reports & Analytics
 - System summary (total properties, tenants, active rentals)
 - View available properties
 - Monthly revenue report
