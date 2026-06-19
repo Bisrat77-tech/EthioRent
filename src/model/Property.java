@@ -8,7 +8,7 @@ public abstract class Property {
     protected int bedrooms;
     protected int bathrooms;
     protected PropertyStatus status;
-// Constructor
+
     public Property(String propertyId, String address, double rent, int bedrooms, int bathrooms){
         this.propertyId = propertyId;
         this.address = address;
@@ -17,7 +17,7 @@ public abstract class Property {
         this.bathrooms = bathrooms;
         this.status = PropertyStatus.AVAILABLE;
     }
-// Getters
+
     public String getPropertyId(){
         return propertyId;
     }
@@ -41,7 +41,7 @@ public abstract class Property {
     public PropertyStatus getStatus() {
         return status;
     }
-// Setter
+
 
     public void setStatus(PropertyStatus status) {
         this.status = status;
