@@ -37,14 +37,14 @@
 
 ## ✨ Features
 
-### 🏢 Property Management
+### Property Management
 - Add new properties (House, Apartment, Studio)
 - View all properties in the system
 - Search properties by ID
 - Update property status (Available/Rented/Maintenance)
 - Remove properties from the system
 
-### 👤 Tenant Management
+### Tenant Management
 - Register new tenants
 - View all registered tenants
 - Search tenants by ID
