@@ -173,7 +173,7 @@ java -cp ./classes Main
 
 ```
 ============================================================
-     🏠 ETHIORENT - HOUSE RENTAL MANAGEMENT SYSTEM 🏠
+       ETHIORENT - HOUSE RENTAL MANAGEMENT SYSTEM 
 ============================================================
 1. Manage Properties
 2. Manage Tenants
