@@ -10,8 +10,7 @@
 **A complete Object-Oriented House Rental Management System built with Java**
 
 </div>
-
-
+---
 ## 🎯 Overview
 
 **EthioRent** is a comprehensive house rental management system developed in Java. It allows property owners to manage properties, tenants, rental agreements, and track payments efficiently. The system demonstrates core Object-Oriented Programming concepts including inheritance, polymorphism, encapsulation, abstraction, exception handling, and file persistence.
