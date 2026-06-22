@@ -49,10 +49,10 @@ public class Main {
         System.out.println("      ETHIORENT - MAIN MENU ");
         System.out.println("=".repeat(55));
         System.out.println("1. Manage Properties");
-        System.out.println("2.  Manage Tenants");
+        System.out.println("2. Manage Tenants");
         System.out.println("3. Manage Rentals");
-        System.out.println("4.  View Reports");
-        System.out.println("5.  Exit");
+        System.out.println("4. View Reports");
+        System.out.println("5. Exit");
         System.out.println("=".repeat(55));
     }
 
@@ -99,7 +99,7 @@ public class Main {
         System.out.println("Property Types:");
         System.out.println("1.  Apartment");
         System.out.println("2.  House");
-        System.out.println("3. Studio");
+        System.out.println("3.  Studio");
 
         int type = InputHelper.getIntInput("Select property type: ");
 
