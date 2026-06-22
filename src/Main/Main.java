@@ -46,7 +46,7 @@ public class Main {
 
     private static void displayMainMenu() {
         System.out.println("\n" + "=".repeat(55));
-        System.out.println("      ETHIORENT - MAIN MENU ");
+        System.out.println("  ETHIORENT - MAIN MENU ");
         System.out.println("=".repeat(55));
         System.out.println("1. Manage Properties");
         System.out.println("2. Manage Tenants");
@@ -149,7 +149,7 @@ public class Main {
     }
 
     private static void updatePropertyStatus() {
-        String id = InputHelper.getStringInput("\nEnter Property ID: ");
+        String id = InputHelper.getStringInput("\n Enter Property ID: ");
         Property property = rentalSystem.findPropertyById(id);
         if (property != null) {
             System.out.println("Current Status: " + property.getStatus());
@@ -355,7 +355,7 @@ public class Main {
                 property.setStatus(PropertyStatus.AVAILABLE);
             }
             System.out.println(" Rental terminated successfully!");
-            System.out.println("   Property is now available for new tenants.");
+            System.out.println(" Property is now available for new tenants.");
         } else {
             System.out.println(" Rental agreement not found!");
         }
