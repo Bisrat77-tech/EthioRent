@@ -1,4 +1,4 @@
-# 🏠 EthioRent - House Rental Management System
+# 🏠 EthioRent - House Rental Management System  🏠
 
 <div align="center">
 
